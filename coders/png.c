@@ -1722,7 +1722,10 @@ static void MagickPNGErrorHandler(png_struct *ping,png_const_charp message)
    */
   longjmp(ping->jmpbuf,1);
 #else
+// Faasm: comment out setjmp/longjmp as it is not supported in WebAssembly
+#ifndef __faasm
   png_longjmp(ping,1);
+#endif
 #endif
 }
 
@@ -2414,6 +2417,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   quantum_scanline = (Quantum *) NULL;
   quantum_info = (QuantumInfo *) NULL;
 
+// Faasm: comment out setjmp/longjmp as it is not supported in WebAssembly
+#ifndef __faasm
   if (setjmp(png_jmpbuf(ping)))
     {
       /*
@@ -2441,6 +2446,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         image=DestroyImageList(image);
       return(image);
     }
+#endif
 
   /* {  For navigation to end of SETJMP-protected block.  Within this
    *    block, use png_error() instead of Throwing an Exception, to ensure
@@ -9925,6 +9931,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   png_set_write_fn(ping,image,png_put_data,png_flush_data);
   pixel_info=(MemoryInfo *) NULL;
 
+// Faasm: comment out setjmp/longjmp as it is not supported in WebAssembly
+#ifndef __faasm
   if (setjmp(png_jmpbuf(ping)))
     {
       /*
@@ -9951,6 +9959,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       image=DestroyImage(image);
       return(MagickFalse);
     }
+#endif
 
   /* {  For navigation to end of SETJMP-protected block.  Within this
    *    block, use png_error() instead of Throwing an Exception, to ensure
