@@ -70,6 +70,7 @@
 /utilities/mogrify
 /utilities/montage
 /utilities/stream
+/utilities/*.1
 
 /ImageMagick.spec
 /autom4te.cache
