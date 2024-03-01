@@ -1757,7 +1757,8 @@ MagickExport void MagickDelay(const MagickSizeType milliseconds)
     timer.tv_usec=(long) (milliseconds % 1000)*1000;
     (void) select(0,(XFD_SET *) NULL,(XFD_SET *) NULL,(XFD_SET *) NULL,&timer);
   }
-#elif defined(MAGICKCORE_HAVE_POLL)
+// Faasm: do not use poll
+#elif defined(MAGICKCORE_HAVE_POLL) && !defined(__faasm)
   (void) poll((struct pollfd *) NULL,0,(int) milliseconds);
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   Sleep((long) milliseconds);
@@ -1879,7 +1880,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
     {
       char
         *property;
-          
+
       passes=0;
       property=GetEnvironmentValue("MAGICK_SHRED_PASSES");
       if (property != (char *) NULL)
